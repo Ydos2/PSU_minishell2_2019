@@ -7,7 +7,7 @@
 
 #include "minishell.h"
 
-void set_signal_Handler()
+void set_signal_Handler(void)
 {
     write(1, "\n▀▄▀▄▀▄ Minishell ▄▀▄▀▄▀$> ", 51);
 }

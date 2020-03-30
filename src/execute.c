@@ -35,10 +35,10 @@ void initialise_ex(mini_t *mini, char *path)
     else if (pid > 0)
         waitpid(pid, &arg, 0);
     if (WIFSIGNALED(arg)) {
-        my_putstr(strsignal(WTERMSIG(arg)));
+        my_puterror(strsignal(WTERMSIG(arg)));
         if (WCOREDUMP(arg))
-            write(1, " (core dumped)", 14);
-        write(1, "\n", 1);
+            write(2, " (core dumped)", 14);
+        write(2, "\n", 1);
     }
     kill(pid, SIGKILL);
 }
@@ -51,8 +51,8 @@ int set_file_type(char *str)
         if (S_ISREG(sb.st_mode) != 0) {
             return (0);
         } else {
-            my_putstr(str);
-            write(1, ": Permission denied.\n", 21);
+            my_puterror(str);
+            write(2, ": Permission denied.\n", 21);
             return (1);
         }
     }

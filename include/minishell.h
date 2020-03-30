@@ -126,4 +126,8 @@ int set_line_formatting(char *line);
 // my_strncmp.c
 int my_strncmp(char *s1, char *s2, int n, int space);
 
+// my_puterror.c
+int my_puterror(char const *str);
+void my_putchar_error(char c);
+
 #endif /* !LS_H_ */

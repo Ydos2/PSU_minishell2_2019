@@ -24,6 +24,7 @@ SRC     =	src/initialise.c							\
 			src/execute.c								\
 			src/line_formatting.c						\
 			src/my_strncmp.c							\
+			src/my_puterror.c							\
 
 OBJ     =	$(SRC:.c=.o) 			\
 
@@ -42,7 +43,12 @@ CFLAGS    =    -I./include -Wextra -g3 -W -Wall -pedantic
 
 TARGET    =		mysh		\
 
-TEST_SRC     =     tests/criterion.c		\
+TEST_SRC     =		tests/criterion.c						\
+					tests/tests_line_formatting.c			\
+					tests/tests_set_ex.c					\
+					tests/tests_str_to_word_array_1.c		\
+					tests/tests_tools_function.c			\
+					tests/tests_tools_function_next.c		\
 
 TEST_OBJ     =     $(TEST_SRC:.c=.o)
 
