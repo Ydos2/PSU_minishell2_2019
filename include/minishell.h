@@ -31,6 +31,7 @@ typedef struct mini
     char **envp;
     char *cd_old;
     char *cd_new;
+    int nbr_pipe;
 } mini_t;
 
 // main.c
@@ -45,7 +46,11 @@ void draw_exit(mini_t *mini, char **flag, int nbr);
 // minishell.c
 int initialise_minishell(mini_t *mini, char **envp);
 int initialise_shell(mini_t *mini);
-int get_argument(mini_t *mini, char *line);
+
+// len_parameters.c
+char **verif_pipe(mini_t *mini, char *line);
+
+// command_execute.c
 void set_other_command(mini_t *mini, char *line, char **envp, int space);
 void set_command_not_find(char *line);
 
@@ -129,5 +134,8 @@ int my_strncmp(char *s1, char *s2, int n, int space);
 // my_puterror.c
 int my_puterror(char const *str);
 void my_putchar_error(char c);
+
+// my_malloc_array.c
+char **my_malloc_array(int x, int y);
 
 #endif /* !LS_H_ */

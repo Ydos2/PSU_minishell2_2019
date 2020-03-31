@@ -42,11 +42,10 @@ int get_env_path(char **envp, mini_t *mini)
 char *set_test_path(char **envp, char *line, int k, mini_t *mini)
 {
     char *path = NULL;
-    int nbr = 0;
+    int nbr = my_strlen(line);
     int j = mini->j;
     int e = 0;
 
-    nbr = my_strlen(line);
     mini->j = mini->j + k;
     nbr = nbr + k;
     path = malloc(sizeof(char) * nbr);

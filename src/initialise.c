@@ -12,6 +12,7 @@ mini_t *initialise_var_start(mini_t *mini)
     mini = malloc(sizeof(mini_t));
     mini->quit = 0;
     mini->ret_nbr = 0;
+    mini->nbr_pipe = 1;
     mini->flag = NULL;
     mini->cd_old = NULL;
     mini->cd_new = getcwd(NULL, 0);
