@@ -32,6 +32,7 @@ typedef struct mini
     char *cd_old;
     char *cd_new;
     int nbr_pipe;
+    char *separator;
 } mini_t;
 
 // main.c
@@ -137,5 +138,11 @@ void my_putchar_error(char c);
 
 // my_malloc_array.c
 char **my_malloc_array(int x, int y);
+
+// dup.c
+int get_dup_arguments(mini_t *mini, char *line);
+
+// pipe.c
+int get_pipe_arguments(mini_t *mini, char *line);
 
 #endif /* !LS_H_ */

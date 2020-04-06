@@ -13,11 +13,15 @@ char **malloc_pipe(mini_t *mini, char *line, char **pipe_line)
     int k = 0;
 
     for (int i = 0, j = 0; line[i] != '\0'; i++, j++)
-        if (line[i] == ';' || line[i] == '|')
+        if (line[i] == ';' || line[i] == '|' || (line[i] == '<'
+        && line[i-1] != '<') || (line[i] == '>' && line[i-1] != '>'))
             mini->nbr_pipe += 1;
+    mini->separator = malloc(sizeof(char) * mini->nbr_pipe);
     pipe_line = malloc(sizeof(char *) * mini->nbr_pipe);
     for (int i = 0; line[i] != '\0'; i++, m++)
-        if (line[i] == ';' || line[i] == '|') {
+        if (line[i] == ';' || line[i] == '|' || (line[i] == '<'
+        && line[i-1] != '<') || (line[i] == '>' && line[i-1] != '>')) {
+            mini->separator[k] = line[i];
             pipe_line[k] = malloc(sizeof(char) * m);
             m = -1;
             k++;
@@ -33,7 +37,8 @@ char **verif_pipe(mini_t *mini, char *line)
     line = my_len_str(line);
     pipe_line = malloc_pipe(mini, line, pipe_line);
     for (int i = 0, j = 0, k = 0; line[i] != '\0'; i++, j++) {
-        if (line[i] == ';' || line[i] == '|') {
+        if (line[i] == ';' || line[i] == '|' || (line[i] == '<'
+        && line[i-1] != '<') || (line[i] == '>' && line[i-1] != '>')) {
             j = -1;
             k++;
         } else

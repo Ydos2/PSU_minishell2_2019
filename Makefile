@@ -28,6 +28,8 @@ SRC     =	src/initialise.c				\
 			src/command_execute.c			\
 			src/len_parameters.c			\
 			src/my_malloc_array.c			\
+			src/dup.c						\
+			src/pipe.c						\
 
 OBJ     =	$(SRC:.c=.o) 			\
 
@@ -42,7 +44,7 @@ MAIN_SRC    =    src/main.c			\
 
 MAIN_OBJ    =    $(MAIN_SRC:.c=.o)	\
 
-CFLAGS    =    -I./include -Wextra -g3 -W -Wall -pedantic
+CFLAGS    =    -I./include -Wextra -W -Wall -pedantic
 
 TARGET    =		mysh		\
 
@@ -92,9 +94,11 @@ tests_run: $(OBJ) $(TEST_OBJ)
 	@printf "\e[1;3;5;32m▀▄▀▄▀▄ Tests the code ▄▀▄▀▄▀\e[0m\n"
 	@./$(TEST_TARGET)
 	@gcovr --exclude tests/
+	@gcovr -b
 
 re_tests: fclean tests_run ## Clean then tests
 
+valgrind:	CFLAGS += -g3
 valgrind: fclean all ## Launch valgrind
 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(TARGET)
 

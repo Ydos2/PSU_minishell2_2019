@@ -44,10 +44,17 @@ int get_argument(mini_t *mini, char *line)
     return (0);
 }
 
-void loop_pipe(mini_t *mini, char *line)
+int loop_pipe(mini_t *mini, char **line, int i)
 {
-    get_argument(mini, line);
-    free(line);
+    if (mini->separator[i] == '|')
+        get_pipe_arguments(mini, line[i]);
+    else if (mini->separator[i] == '>' || mini->separator[i] == '<') {
+        get_dup_arguments(mini, line[i]);
+        return (1);
+    } else
+        get_argument(mini, line[i]);
+    free(line[i]);
+    return (0);
 }
 
 int initialise_shell(mini_t *mini)
@@ -69,7 +76,7 @@ int initialise_shell(mini_t *mini)
         return (0);
     }
     pipe_line = verif_pipe(mini, line);
-    for (int i = 0; mini->nbr_pipe != 0; mini->nbr_pipe--, i++)
-        loop_pipe(mini, pipe_line[i]);
+    for (int i = 0; i < mini->nbr_pipe; i++)
+        i += loop_pipe(mini, pipe_line, i);
     return (0);
 }
