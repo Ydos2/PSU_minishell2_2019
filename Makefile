@@ -30,6 +30,8 @@ SRC     =	src/initialise.c				\
 			src/my_malloc_array.c			\
 			src/dup.c						\
 			src/pipe.c						\
+			src/double_right.c				\
+			src/double_left.c				\
 
 OBJ     =	$(SRC:.c=.o) 			\
 

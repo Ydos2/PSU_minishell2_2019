@@ -1,67 +1,42 @@
 /*
 ** EPITECH PROJECT, 2020
-** pipe
+** double_right
 ** File description:
-** pipe
+** double_right
 */
 
+
 #include "minishell.h"
-#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/wait.h>
+#include <fcntl.h>
 #include <sys/types.h>
-#include "minishell.h"
+#include <sys/stat.h>
 
-static void fils(int out, char *path_2, mini_t *mini)
+static int set_unix_dup(mini_t *mini, char *path, char *path_2, char **envp)
 {
-    close(STDOUT_FILENO);
-    dup(out);
-    close(STDERR_FILENO);
-    dup(out);
-    close(out);
-    if (execve(path_2, mini->flag_2, mini->envp) == -1)
-        exit(0);
-}
-
-static void second_fork(int tube[2], mini_t *mini, char *path, char **envp)
-{
-    pid_t pid;
+    pid_t pid = 0;
     int arg = 0;
+    int in = open(path_2, O_RDONLY);
+    int out = open(path_2, O_WRONLY | O_TRUNC | O_CREAT,
+        S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR);
 
     pid = fork();
     if (pid == 0) {
-        close(tube[1]);
-        close(STDIN_FILENO);
-        dup(tube[0]);
-        close(tube[0]);
+        dup2(in, 0);
+        dup2(out, 1);
+        close(in);
+        close(out);
         execve(path, mini->flag, envp);
-    }
-    waitpid(pid, &arg, 0);
-    kill(pid, SIGKILL);
-}
-
-static int set_tube(mini_t *mini, char *path, char *path_2, char **envp)
-{
-    int tube[2];
-    pid_t pid;
-    int arg = 0;
-
-    if (pipe(tube) == -1)
-        return (0);
-    pid = fork();
-    if (pid == 0) {
-        close(tube[0]);
-        fils(tube[1], path_2, mini);
-    } else {
+    } else if (pid > 0)
         waitpid(pid, &arg, 0);
-        kill(pid, SIGKILL);
-        second_fork(tube, mini, path, envp);
-    }
+    if (WIFSIGNALED(arg))
+        my_putstr(strsignal(WTERMSIG(arg)));
+    kill(pid, SIGKILL);
     return (0);
 }
 
-static void set_command_pipe(mini_t *mini, char *line, char *line_2, int space)
+static void set_command_dup(mini_t *mini, char *line, char *line_2, int space)
 {
     char *path = NULL;
     char *path_2 = NULL;
@@ -69,18 +44,17 @@ static void set_command_pipe(mini_t *mini, char *line, char *line_2, int space)
     mini->space = space;
     if (line[space+0] != '\0') {
         mini->flag = my_str_to_word_array(line);
-        mini->flag_2 = my_str_to_word_array(line_2);
         line = get_unix_arg(mini, line);
         path = set_path(line, mini->envp, mini);
-        path_2 = set_path(line_2, mini->envp, mini);
+        path_2 = parssing_path(line_2);
         if (path != NULL)
-            set_tube(mini, path, path_2, mini->envp);
+            set_unix_dup(mini, path, path_2, mini->envp);
         else
             set_command_not_find(line);
     }
 }
 
-int get_pipe_arguments(mini_t *mini, char *line, char *line_2)
+int get_double_dup_arguments(mini_t *mini, char *line, char *line_2)
 {
     int i = 0;
     int space = set_line_formatting(line);
@@ -99,6 +73,7 @@ int get_pipe_arguments(mini_t *mini, char *line, char *line_2)
         i = initialise_envv(mini->envp, line);
     if (i == 1)
         return (0);
-    set_command_pipe(mini, line, line_2, space);
+        puts("!");
+    set_command_dup(mini, line, line_2, space);
     return (0);
 }

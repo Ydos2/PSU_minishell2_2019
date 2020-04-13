@@ -46,10 +46,15 @@ int get_argument(mini_t *mini, char *line)
 
 int loop_pipe(mini_t *mini, char **line, int i)
 {
-    if (mini->separator[i] == '|')
-        get_pipe_arguments(mini, line[i]);
-    else if (mini->separator[i] == '>' || mini->separator[i] == '<') {
-        get_dup_arguments(mini, line[i]);
+    if (mini->separator[i] == '|') {
+        get_pipe_arguments(mini, line[i], line[i + 1]);
+        return (1);
+    } else if (mini->separator[i] == '>' || mini->separator[i] == '<') {
+        if (mini->separator_double[i] == '>'
+            || mini->separator_double[i] == '<')
+            get_double_dup_arguments(mini, line[i], line[i + 1]);
+        else
+            get_dup_arguments(mini, line[i], line[i + 1]);
         return (1);
     } else
         get_argument(mini, line[i]);

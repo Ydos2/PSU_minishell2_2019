@@ -28,11 +28,13 @@ typedef struct mini
     int j;
     int space;
     char **flag;
+    char **flag_2;
     char **envp;
     char *cd_old;
     char *cd_new;
     int nbr_pipe;
     char *separator;
+    char *separator_double;
 } mini_t;
 
 // main.c
@@ -140,9 +142,13 @@ void my_putchar_error(char c);
 char **my_malloc_array(int x, int y);
 
 // dup.c
-int get_dup_arguments(mini_t *mini, char *line);
+int get_dup_arguments(mini_t *mini, char *line, char *line_2);
+char *parssing_path(char *line);
+
+// double_right.c
+int get_double_dup_arguments(mini_t *mini, char *line, char *line_2);
 
 // pipe.c
-int get_pipe_arguments(mini_t *mini, char *line);
+int get_pipe_arguments(mini_t *mini, char *line, char *line_2);
 
 #endif /* !LS_H_ */
