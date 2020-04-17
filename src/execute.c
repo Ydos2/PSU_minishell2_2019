@@ -34,12 +34,7 @@ void initialise_ex(mini_t *mini, char *path)
         execve(path, mini->flag, mini->envp);
     else if (pid > 0)
         waitpid(pid, &arg, 0);
-    if (WIFSIGNALED(arg)) {
-        my_puterror(strsignal(WTERMSIG(arg)));
-        if (WCOREDUMP(arg))
-            write(2, " (core dumped)", 14);
-        write(2, "\n", 1);
-    }
+    error_manager(arg);
     kill(pid, SIGKILL);
 }
 

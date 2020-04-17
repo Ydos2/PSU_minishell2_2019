@@ -17,8 +17,7 @@ int set_unix(mini_t *mini, char *path, char **envp)
         execve(path, mini->flag, envp);
     else if (pid > 0)
         waitpid(pid, &arg, 0);
-    if (WIFSIGNALED(arg))
-        my_putstr(strsignal(WTERMSIG(arg)));
+    error_manager(arg);
     kill(pid, SIGKILL);
     return (0);
 }

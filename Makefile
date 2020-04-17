@@ -32,6 +32,7 @@ SRC     =	src/initialise.c				\
 			src/pipe.c						\
 			src/double_right.c				\
 			src/double_left.c				\
+			src/error.c						\
 
 OBJ     =	$(SRC:.c=.o) 			\
 

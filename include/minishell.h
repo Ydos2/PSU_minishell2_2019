@@ -151,4 +151,7 @@ int get_double_dup_arguments(mini_t *mini, char *line, char *line_2);
 // pipe.c
 int get_pipe_arguments(mini_t *mini, char *line, char *line_2);
 
+// error.c
+void error_manager(int arg);
+
 #endif /* !LS_H_ */

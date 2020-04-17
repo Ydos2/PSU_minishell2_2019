@@ -55,6 +55,7 @@ static int set_tube(mini_t *mini, char *path, char *path_2, char **envp)
         fils(tube[1], path_2, mini);
     } else {
         waitpid(pid, &arg, 0);
+        error_manager(arg);
         kill(pid, SIGKILL);
         second_fork(tube, mini, path, envp);
     }

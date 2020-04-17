@@ -5,7 +5,6 @@
 ** double_right
 */
 
-
 #include "minishell.h"
 #include <stdio.h>
 #include <unistd.h>
@@ -30,8 +29,7 @@ static int set_unix_dup(mini_t *mini, char *path, char *path_2, char **envp)
         execve(path, mini->flag, envp);
     } else if (pid > 0)
         waitpid(pid, &arg, 0);
-    if (WIFSIGNALED(arg))
-        my_putstr(strsignal(WTERMSIG(arg)));
+    error_manager(arg);
     kill(pid, SIGKILL);
     return (0);
 }
@@ -73,7 +71,6 @@ int get_double_dup_arguments(mini_t *mini, char *line, char *line_2)
         i = initialise_envv(mini->envp, line);
     if (i == 1)
         return (0);
-        puts("!");
     set_command_dup(mini, line, line_2, space);
     return (0);
 }

@@ -4,7 +4,7 @@
 The aim of this project is to recreate a shell, it is divided into three parts and this one is the first one.
 
 ## General informations
-Name : minishell_2
+Name : minishell_2<br />
 Author : Mathias Ressort
 
 ## Requirement Package
