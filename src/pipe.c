@@ -13,52 +13,42 @@
 #include <sys/types.h>
 #include "minishell.h"
 
-static void fils(int out, char *path_2, mini_t *mini)
+static void fils(int *out, char *path_2, mini_t *mini)
 {
-    close(STDOUT_FILENO);
-    dup(out);
-    close(STDERR_FILENO);
-    dup(out);
-    close(out);
+    dup2(out[0], 0);
+    close(out[1]);
     if (execve(path_2, mini->flag_2, mini->envp) == -1)
         exit(0);
 }
 
-static void second_fork(int tube[2], mini_t *mini, char *path, char **envp)
+static void second_fork(int *tube, mini_t *mini, char *path, char **envp)
 {
-    pid_t pid;
-    int arg = 0;
-
-    pid = fork();
-    if (pid == 0) {
-        close(tube[1]);
-        close(STDIN_FILENO);
-        dup(tube[0]);
-        close(tube[0]);
-        execve(path, mini->flag, envp);
-    }
-    waitpid(pid, &arg, 0);
-    kill(pid, SIGKILL);
+    dup2(tube[1], 1);
+    close(tube[0]);
+    execve(path, mini->flag, envp);
 }
 
 static int set_tube(mini_t *mini, char *path, char *path_2, char **envp)
 {
     int tube[2];
     pid_t pid;
+    pid_t pid_2;
     int arg = 0;
 
     if (pipe(tube) == -1)
         return (0);
     pid = fork();
-    if (pid == 0) {
-        close(tube[0]);
-        fils(tube[1], path_2, mini);
-    } else {
+    pid_2 = fork();
+    if (pid == 0 && pid_2 > 0) {
+        fils(tube, path_2, mini);
+    } else if (pid_2 == 0 && pid > 0)
+        second_fork(tube, mini, path, envp);
+    if (pid != 0 && pid_2 != 0) {
         waitpid(pid, &arg, 0);
         error_manager(arg);
         kill(pid, SIGKILL);
-        second_fork(tube, mini, path, envp);
-    }
+    } else
+        exit(0);
     return (0);
 }
 
