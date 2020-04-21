@@ -50,6 +50,10 @@ int set_file_type(char *str)
             write(2, ": Permission denied.\n", 21);
             return (1);
         }
+    } else {
+        my_putstr(str);
+        write(1, ": Command not found.\n", 21);
+        return (1);
     }
     return (0);
 }
