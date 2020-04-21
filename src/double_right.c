@@ -17,7 +17,7 @@ static int set_unix_dup(mini_t *mini, char *path, char *path_2, char **envp)
     pid_t pid = 0;
     int arg = 0;
     int in = open(path_2, O_RDONLY);
-    int out = open(path_2, O_WRONLY | O_TRUNC | O_CREAT,
+    int out = open(path_2, O_CREAT | O_RDWR | O_APPEND,
         S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR);
 
     pid = fork();
