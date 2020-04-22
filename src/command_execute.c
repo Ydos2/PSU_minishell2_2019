@@ -18,6 +18,8 @@ void set_other_command(mini_t *mini, char *line, char **envp, int space)
         path = set_path(line, envp, mini);
         if (path != NULL)
             set_unix(mini, path, envp);
+        else if (access(line, F_OK) == 0)
+            set_unix(mini, line, envp);
         else
             set_command_not_find(line);
     }

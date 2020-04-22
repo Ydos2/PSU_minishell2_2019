@@ -66,6 +66,8 @@ static void set_command_pipe(mini_t *mini, char *line, char *line_2, int space)
         path_2 = set_path(line_2, mini->envp, mini);
         if (path != NULL)
             set_tube(mini, path, path_2, mini->envp);
+        else if (access(line, F_OK) == 0)
+            set_tube(mini, line, line_2, mini->envp);
         else
             set_command_not_find(line);
     }

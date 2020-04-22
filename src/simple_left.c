@@ -43,6 +43,8 @@ static void set_command_dup(mini_t *mini, char *line, char *line_2, int space)
         path_2 = parssing_path(line_2);
         if (path != NULL)
             set_unix_dup(mini, path, path_2, mini->envp);
+        else if (access(line, F_OK) == 0)
+            set_unix_dup(mini, line, line_2, mini->envp);
         else
             set_command_not_find(line);
     }
