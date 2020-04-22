@@ -29,7 +29,7 @@ void error_manager(int arg)
                 write(2, "Segmentation fault", 18);
                 break;
             case 8:
-                write(2, "Floating exeption", 18);
+                write(2, "Floating exception", 18);
                 break;
         }
     if (WTERMSIG(arg) != 11 && WTERMSIG(arg) != 8)
