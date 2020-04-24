@@ -43,16 +43,14 @@ int set_file_type(char *str)
     struct stat sb;
 
     if (stat(str, &sb) != -1) {
-        if (S_ISREG(sb.st_mode) != 0) {
-            return (0);
-        } else {
+        if (!S_ISREG(sb.st_mode)) {
             my_puterror(str);
             write(2, ": Permission denied.\n", 21);
             return (1);
         }
     } else {
         my_putstr(str);
-        write(1, ": Command not found.\n", 21);
+        write(2, ": Command not found.\n", 21);
         return (1);
     }
     return (0);

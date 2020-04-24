@@ -16,11 +16,11 @@ static int set_unix_dup(mini_t *mini, char *path, char *path_2, char **envp)
 {
     pid_t pid = 0;
     int arg = 0;
-    int out = open(path_2, O_RDONLY, 0);
+    int out = open(path_2, O_RDONLY);
 
     pid = fork();
     if (pid == 0) {
-        dup2(out, 1);
+        dup2(out, 0);
         close(out);
         execve(path, mini->flag, envp);
     } else if (pid > 0)
