@@ -11,4 +11,4 @@ Author : Mathias Ressort
 * C
 
 ## Screenshot
-![screenshot](https://github.com/Ydos2/PSU_minishell2_2019/blob/master/pictures/screenshot_1.png)
+![screenshot](https://github.com/Ydos2/PSU_minishell2_2019/blob/master/pictures/screenshot.png)

@@ -27,6 +27,7 @@ typedef struct mini
     int i;
     int j;
     int space;
+    int space_2;
     char **flag;
     char **flag_2;
     char **envp;
@@ -74,6 +75,7 @@ void set_cd_less(mini_t *mini);
 // unix_argument.c
 int set_unix(mini_t *mini, char *line, char **envp);
 char *get_unix_arg(mini_t *mini, char *line);
+char *get_unix_arg_two(mini_t *mini, char *line);
 
 // env.c
 char *set_path(char *line, char **envp, mini_t *mini);

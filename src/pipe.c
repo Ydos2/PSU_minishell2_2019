@@ -5,7 +5,6 @@
 ** pipe
 */
 
-#include "minishell.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -13,43 +12,37 @@
 #include <sys/types.h>
 #include "minishell.h"
 
-static void fils(int *out, char *path_2, mini_t *mini)
+static void end_tube(int arg, int tube[2])
 {
-    dup2(out[0], 0);
-    close(out[1]);
-    if (execve(path_2, mini->flag_2, mini->envp) == -1)
-        exit(0);
+    for (int i = 0; i < 2; i++)
+        close(tube[i]);
+    for (int i = 0; i < 2; i++)
+        wait(&arg);
+    error_manager(arg);
 }
 
-static void second_fork(int *tube, mini_t *mini, char *path, char **envp)
-{
-    dup2(tube[1], 1);
-    close(tube[0]);
-    execve(path, mini->flag, envp);
-}
-
-static int set_tube(mini_t *mini, char *path, char *path_2, char **envp)
+static void set_tube(mini_t *mini, char *path, char *path_2)
 {
     int tube[2];
-    pid_t pid;
-    pid_t pid_2;
-    int arg = 0;
+    int arg;
+    pid_t pid_child;
+    pid_t pid_parent;
 
-    if (pipe(tube) == -1)
-        return (0);
-    pid = fork();
-    pid_2 = fork();
-    if (pid == 0 && pid_2 > 0) {
-        fils(tube, path_2, mini);
-    } else if (pid_2 == 0 && pid > 0)
-        second_fork(tube, mini, path, envp);
-    if (pid != 0 && pid_2 != 0) {
-        waitpid(pid, &arg, 0);
-        error_manager(arg);
-        kill(pid, SIGKILL);
-    } else
-        exit(0);
-    return (0);
+    pipe(tube);
+    pid_child = fork();
+    if (pid_child == 0) {
+        close(tube[1]);
+        dup2(tube[0], 0);
+        if (execve(path_2, mini->flag_2, mini->envp) == -1)
+            exit(0);
+    } else if ((pid_parent = fork()
+        ) == 0) {
+        close(tube[0]);
+        dup2(tube[1], 1);
+        if (execve(path, mini->flag, mini->envp) == -1)
+            exit(0);
+    }
+    end_tube(arg, tube);
 }
 
 static void set_command_pipe(mini_t *mini, char *line, char *line_2, int space)
@@ -61,13 +54,13 @@ static void set_command_pipe(mini_t *mini, char *line, char *line_2, int space)
     if (line[space+0] != '\0') {
         mini->flag = my_str_to_word_array(line);
         mini->flag_2 = my_str_to_word_array(line_2);
+
         line = get_unix_arg(mini, line);
+        line_2 = get_unix_arg_two(mini, line_2);
         path = set_path(line, mini->envp, mini);
         path_2 = set_path(line_2, mini->envp, mini);
-        if (path != NULL)
-            set_tube(mini, path, path_2, mini->envp);
-        else if (access(line, F_OK) == 0)
-            set_tube(mini, line, line_2, mini->envp);
+        if (path != NULL && path_2 != NULL)
+            set_tube(mini, path, path_2);
         else
             set_command_not_find(line);
     }
@@ -77,6 +70,7 @@ int get_pipe_arguments(mini_t *mini, char *line, char *line_2)
 {
     int i = 0;
     int space = set_line_formatting(line);
+    mini->space_2 = set_line_formatting(line_2);
 
     if (my_strncmp(line, "./", 2, space) == 0)
         i = set_ex(mini, line, space);

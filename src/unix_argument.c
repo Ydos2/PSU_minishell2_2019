@@ -37,3 +37,19 @@ char *get_unix_arg(mini_t *mini, char *line)
     }
     return (arg_line);
 }
+
+char *get_unix_arg_two(mini_t *mini, char *line)
+{
+    char *arg_line = NULL;
+    int i = 0;
+    int j = 0;
+
+    for (int k = mini->space_2; line[k] != '\0'; k++, i++);
+    arg_line = malloc(sizeof(char) * i);
+    for (int k = mini->space_2; j != i; j++, k++) {
+        if (line[k] == ' ')
+            break;
+        arg_line[j] = line[k];
+    }
+    return (arg_line);
+}
